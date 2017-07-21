@@ -1,0 +1,103 @@
+.App {
+  text-align: center;
+  cursor: default;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 10s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+.App-header h2{
+  color: #fff;
+  
+}
+
+.App-intro {
+  font-size: large;
+}
+.music-box{
+    width: 430px;
+    height: 540px;
+    background-color: #888;
+    margin: auto;
+    margin-top: 30px;
+    border-radius: 16px;
+    padding-top: 20px;
+    box-sizing: border-box;
+    box-shadow: 10px 10px 7px #dad0d0;
+}
+/*音乐信息*/
+.music-name{
+    font-size: 20px;
+    color: #fff;
+    margin: 0;
+}
+.singer{
+    font-size: 16px;
+    color: #fff;
+    margin: 0;
+}
+/*音乐图片*/
+.music-pic{
+    width: 360px;
+    height: 300px;
+    margin: auto;
+    margin-top: 20px;
+    border: 1px solid #676869;
+}
+.music-pic img{
+    width: 100%;
+}
+/*音乐进度*/
+.timeline{
+    heigth:20px;
+    margin: auto;
+    margin-top: 10px;
+    color: #fff;
+}
+.timeline span {
+    display: inline-block;
+    vertical-align: middle;
+}
+.timeline p{
+    display: inline-block;
+    width: 275px;
+    height: 2px;
+    margin: 0 12px;
+    border: 1px solid #676869;
+    vertical-align: middle;
+}
+/*音乐控制*/
+.controler{
+    width: 360px;
+    height: 80px;
+    margin: auto;
+    margin-top: 10px;
+}
+.n-p{
+    font-size: 26px;
+    color: #fff;
+    vertical-align: middle !important;
+    cursor: pointer;
+}
+.n-p:hover{
+    color:#d2d2d2;
+}
+.play{
+   font-size: 60px;
+   color: #fff;
+   vertical-align: middle !important;
+   margin: 10px 50px;
+   cursor: pointer;
+}
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
