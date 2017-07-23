@@ -27,7 +27,7 @@
     height: 540px;
     background-color: #888;
     margin: auto;
-    margin-top: 30px;
+    margin-top: 20px;
     border-radius: 16px;
     padding-top: 20px;
     box-sizing: border-box;
@@ -66,13 +66,18 @@
     display: inline-block;
     vertical-align: middle;
 }
-.timeline p{
+.progress{
     display: inline-block;
     width: 275px;
-    height: 2px;
+    height: 3px;
     margin: 0 12px;
     border: 1px solid #676869;
     vertical-align: middle;
+}
+.process{
+    height: 1px ;
+    width: 10px;
+    background-color: #cddc39;
 }
 /*音乐控制*/
 .controler{
