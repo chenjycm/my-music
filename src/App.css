@@ -77,17 +77,59 @@
     border: 1px solid #676869;
     vertical-align: middle;
 }
-.process{
+.process{ 
+    position: relative;
     height: 1px ;
     width: 10px;
     background-color: #cddc39;
+}
+.protog{
+    position: absolute;
+    right: -4px;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+    background-color:#fff; 
+    cursor: pointer;
+}
+.prodrag{
+    display: inline-block;
+    vertical-align: middle;
+    width: 68%;
+    margin: 0px 6px;
+}
+.prodrag .ant-slider-handle{
+    margin-top: -6px;
+}
+.prodrag .ant-slider-step{
+    height: 2px;
+}
+.prodrag .ant-slider-track{
+    height: 2px;
+}
+.prodrag .ant-slider-rail{
+    height: 2px;
+}
+
+.ant-slider-vertical .ant-slider-handle {
+    margin-left: -6px !important;
+}
+.ant-slider-vertical .ant-slider-track {
+    width: 2px !important;
+}
+.ant-slider-vertical .ant-slider-step {
+    width: 2px !important;
+}
+.ant-slider-vertical .ant-slider-rail {
+    width: 2px !important;
 }
 /*音乐控制*/
 .controler{
     width: 360px;
     height: 80px;
     margin: auto;
-    margin-top: 10px;
+    margin-top: 5px;
     position: relative;
 }
 .n-p{
@@ -107,7 +149,7 @@
    cursor: pointer;
 }
 .contrvo{
-    height: 100%;
+    height: 82%;
     position: absolute;
     top: 0;
     left: 0;

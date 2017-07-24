@@ -4,7 +4,6 @@ import './App.css';
 import Icon from 'antd/lib/icon';
 import Slider from 'antd/lib/slider';
 import 'antd/dist/antd.css';
-// import 'antd/lib/Icon/style/css';
 import call from './music/thecall.mp3';
 import yesterday from './music/yesterday.mp3';
 
@@ -36,6 +35,8 @@ class MUsicBox extends Component {
        this.previous = this.previous.bind(this);
        this.next = this.next.bind(this);
        this.volumeChange=this.volumeChange.bind(this);
+       this.proChange=this.proChange.bind(this);
+       this.timeChange=this.timeChange.bind(this);
     }   
     updatePlayStatus(){     //根据状态来设置音乐播放还是暂停并且更新时间显示
         let audio = document.getElementById('audio');
@@ -74,9 +75,10 @@ class MUsicBox extends Component {
     }
     previous(){   //上一首
         if(this.state.currentListIndex === 0){
-            alert('已经是第一首了！');
+            // alert('已经是第一首了！');
             this.setState({
-                playStatus: false
+                playStatus: false,
+               
             });
         }else{
             this.setState({
@@ -86,11 +88,15 @@ class MUsicBox extends Component {
         }
     }
     next(){     //下一首
+        let audio = document.getElementById('audio');
         if(this.state.currentListIndex + 1 >= this.state.lists.length){
-            alert('已经是最后一首了！');
+            // alert('已经是最后一首了！');
             this.setState({
-                playStatus: false
-            });
+                playStatus: false,
+                currentTime: 0,
+                currentListIndex: 0
+            },()=>{this.updatePlayStatus()});
+            audio.currentTime = 0;
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex + 1,
@@ -106,7 +112,22 @@ class MUsicBox extends Component {
             audio.volume=this.state.playVolume;
         });
     }
-
+    proChange(value){
+         let audio = document.getElementById('audio');        
+         this.setState({
+            playStatus: true
+         },()=>{ audio.currentTime = value / 1000 * this.state.currentTotalTime;}); 
+         audio.play();
+    }
+    timeChange(value){
+        let audio = document.getElementById('audio');    
+        audio.pause();
+        audio.currentTime = value / 1000 * this.state.currentTotalTime;
+        this.setState({
+            currentTime: value / 1000 * this.state.currentTotalTime,
+            playStatus: false
+        });
+    }
     componentDidMount(){            //页面渲染后更新状态
         this.updatePlayStatus();
         let audio = document.getElementById('audio');
@@ -121,9 +142,7 @@ class MUsicBox extends Component {
                 });
             }
         },300);
-
     }
-
 
     render(){       
         return (
@@ -132,16 +151,18 @@ class MUsicBox extends Component {
                 <MuiscTime 
                     currentTime={this.state.currentTime} 
                     currentTotalTime={this.state.currentTotalTime} 
-                    progress={this.state.currentTime / this.state.currentTotalTime * 100 +'%'}
+                    progress={this.state.currentTime / this.state.currentTotalTime}
+                    proChange={this.proChange}
+                    timeChange={this.timeChange}
                 />
                 <MusicControl 
                     isPlay={this.state.playStatus} 
                     onPlay={this.play} 
                     onPrev={this.previous} 
                     onNext={this.next}
-                    volumeChange={this.volumeChange} 
+                    volumeChange={this.volumeChange}
                 />
-                <audio id="audio" src={this.state.lists[this.state.currentListIndex].audio} ></audio>
+                <audio id="audio" src={this.state.lists[this.state.currentListIndex].audio} >您的浏览器不支持 audio 标签。</audio>
             </div>
         );
     }
@@ -180,8 +201,12 @@ class MuiscTime extends Component {     //播放时间及进度
         return (
             <div className="timeline">
                <span>{this.converTime(this.props.currentTime)}</span>
-               <div className="progress"><div className="process" style={{'width':this.props.progress}}></div></div>
-               <span>{this.converTime(this.props.currentTotalTime) }</span>
+             
+                    <div className="prodrag">
+                        <Slider max={1000} value={this.props.progress * 1000} onChange={this.props.timeChange} onAfterChange={this.props.proChange} tipFormatter={false}/>
+                    </div>
+               
+               <span>{this.converTime(this.props.currentTotalTime) }</span>                
             </div>
         )
     }
