@@ -67,7 +67,7 @@ class MUsicBox extends Component {
     }
     previous(){
         if(this.state.currentListIndex === 0){
-            alert('已经是第一首了！');
+            // alert('已经是第一首了！');
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex - 1,
@@ -76,7 +76,7 @@ class MUsicBox extends Component {
     }
     next(){
         if(this.state.currentListIndex + 1 >= this.state.lists.length){
-            alert('已经是最后一首了！');
+            // alert('已经是最后一首了！');
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex + 1,
