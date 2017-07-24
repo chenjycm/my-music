@@ -104,7 +104,7 @@ class MUsicBox extends Component {
             },()=>{this.updatePlayStatus()});
         }
     }
-    volumeChange(value){
+    volumeChange(value){        // 修改音量
         let audio = document.getElementById('audio');
         this.setState({
             playVolume: value / 30 
@@ -112,14 +112,17 @@ class MUsicBox extends Component {
             audio.volume=this.state.playVolume;
         });
     }
-    proChange(value){
+    proChange(value){    //进度条改变完成后开始从设置的位置播放
          let audio = document.getElementById('audio');        
          this.setState({
             playStatus: true
-         },()=>{ audio.currentTime = value / 1000 * this.state.currentTotalTime;}); 
-         audio.play();
+         },()=>{ 
+             audio.currentTime = value / 1000 * this.state.currentTotalTime;
+             audio.play();
+            }
+        );          
     }
-    timeChange(value){
+    timeChange(value){      //进度条改变的时候，暂停播放，实时改变时间状态
         let audio = document.getElementById('audio');    
         audio.pause();
         audio.currentTime = value / 1000 * this.state.currentTotalTime;
@@ -130,8 +133,7 @@ class MUsicBox extends Component {
     }
     componentDidMount(){            //页面渲染后更新状态
         this.updatePlayStatus();
-        let audio = document.getElementById('audio');
-           
+        let audio = document.getElementById('audio');           
         setInterval(()=>{
             if( this.state.currentTime >= this.state.currentTotalTime ){  //判断时间确定是否播放下一首歌
                 this.next();
@@ -162,7 +164,7 @@ class MUsicBox extends Component {
                     onNext={this.next}
                     volumeChange={this.volumeChange}
                 />
-                <audio id="audio" src={this.state.lists[this.state.currentListIndex].audio} >您的浏览器不支持 audio 标签。</audio>
+                <audio id="audio" src={this.state.lists[this.state.currentListIndex].audio} >您的浏览器不支持 audio 标签，无法播放。</audio>
             </div>
         );
     }
