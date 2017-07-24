@@ -26,6 +26,7 @@
     width: 430px;
     height: 540px;
     background-color: #888;
+    background: url('./images/bg.jpg');
     margin: auto;
     margin-top: 20px;
     border-radius: 16px;
@@ -50,7 +51,7 @@
     height: 300px;
     margin: auto;
     margin-top: 20px;
-    border: 1px solid #676869;
+    /*border: 1px solid #676869;*/
 }
 .music-pic img{
     max-width: 100%;
@@ -155,12 +156,36 @@
     left: 0;
 }
 .ant-slider-handle{
-    border: solid 2px #5a5e61 !important;
+    border: solid 2px #4a4d50 !important;
 }
 .ant-slider-track {
-    background-color: #596065 !important;
+    background-color: #4a4d50 !important;
 }
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+@media screen and (max-width: 440px) {
+    .music-box{
+        width: 98%;
+        height: 490px;
+    }
+    .music-pic{
+        width: 85%;
+        height: 250px;
+    }
+    .controler{
+        width: 90%;
+    }
+    .play{
+        margin: 10px 12%;
+    }
+    .music-pic img {
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: initial;
+
+}
+
 }

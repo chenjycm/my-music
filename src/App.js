@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
-import './App.css';
-// import { Icon } from 'antd';
-import Icon from 'antd/lib/icon';
-import Slider from 'antd/lib/slider';
-import 'antd/dist/antd.css';
-import call from './music/thecall.mp3';
-import yesterday from './music/yesterday.mp3';
+import './App.css';             //页面css
+import Icon from 'antd/lib/icon';       //引入播放按钮样式
+import Slider from 'antd/lib/slider';   //引入滑动条样式
+import 'antd/dist/antd.css';            //引入antd的css
+import Music from './music.js';         //引入 音乐列表 ，将音乐列表独立出来，方便后台读取文件，不然要import很多文件
 
 
-class MUsicBox extends Component {
+class MUsicBox extends Component {    //定义了一个音乐组件，其包含很多个子组件
     constructor(){
        super();
        this.state = {
@@ -16,20 +14,11 @@ class MUsicBox extends Component {
           currentTime: 0, //初始化当前播放时间为0
           currentTotalTime: 3599,  //初始化当前歌曲总时间0
           playStatus: true,   //播放状态，false表示已暂停，true表示正在播放
-          playVolume: 0.8, //音量
-          lists: [{
-            "name": "Yesterday Once More",
-            "artists": "Carpenter",
-            "img": "https://gss3.bdstatic.com/7Po3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=e90d3e97d9b44aed4d43b6b6d275ec64/2fdda3cc7cd98d106efc31ec223fb80e7aec90c6.jpg",
-            "audio": yesterday
-            },
-            {
-            "name": "The Call",
-            "artists": "Backstreet",
-            "img": "http://img.eaymusic.com/forum/201506/14/132005m9qpda22eeuqzu6z.jpg",
-            "audio": call
-            }],
+          playVolume: 0.8, //音量 最小是0 最大是1
+          lists: Music      //读取音乐列表到lists作为状态参数，正常应该设置为props参数，也可以在后面直接用Music（这里简化过程用了state，为了以后能够动态更新Music）
+        
        };
+       //父组件所有的操作都要绑定一下，不然this可能会有问题
        this.play = this.play.bind(this);
        this.updatePlayStatus = this.updatePlayStatus.bind(this);
        this.previous = this.previous.bind(this);
@@ -117,7 +106,7 @@ class MUsicBox extends Component {
          this.setState({
             playStatus: true
          },()=>{ 
-             audio.currentTime = value / 1000 * this.state.currentTotalTime;
+             audio.currentTime = value / 2000 * this.state.currentTotalTime;
              audio.play();
             }
         );          
@@ -125,9 +114,9 @@ class MUsicBox extends Component {
     timeChange(value){      //进度条改变的时候，暂停播放，实时改变时间状态
         let audio = document.getElementById('audio');    
         audio.pause();
-        audio.currentTime = value / 1000 * this.state.currentTotalTime;
+        audio.currentTime = value / 2000 * this.state.currentTotalTime;
         this.setState({
-            currentTime: value / 1000 * this.state.currentTotalTime,
+            currentTime: value / 2000 * this.state.currentTotalTime,
             playStatus: false
         });
     }
@@ -165,6 +154,7 @@ class MUsicBox extends Component {
                     volumeChange={this.volumeChange}
                 />
                 <audio id="audio" src={this.state.lists[this.state.currentListIndex].audio} >您的浏览器不支持 audio 标签，无法播放。</audio>
+                {/*<audio id="audio" src={Music.mylove} >您的浏览器不支持 audio 标签，无法播放。</audio>*/}
             </div>
         );
     }
@@ -205,7 +195,7 @@ class MuiscTime extends Component {     //播放时间及进度
                <span>{this.converTime(this.props.currentTime)}</span>
              
                     <div className="prodrag">
-                        <Slider max={1000} value={this.props.progress * 1000} onChange={this.props.timeChange} onAfterChange={this.props.proChange} tipFormatter={false}/>
+                        <Slider max={2000} value={this.props.progress * 2000} onChange={this.props.timeChange} onAfterChange={this.props.proChange} tipFormatter={false}/>
                     </div>
                
                <span>{this.converTime(this.props.currentTotalTime) }</span>                
