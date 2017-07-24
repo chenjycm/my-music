@@ -88,6 +88,7 @@
     height: 80px;
     margin: auto;
     margin-top: 10px;
+    position: relative;
 }
 .n-p{
     font-size: 26px;
@@ -104,6 +105,18 @@
    vertical-align: middle !important;
    margin: 10px 50px;
    cursor: pointer;
+}
+.contrvo{
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.ant-slider-handle{
+    border: solid 2px #5a5e61 !important;
+}
+.ant-slider-track {
+    background-color: #596065 !important;
 }
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

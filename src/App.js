@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Icon } from 'antd';
+// import { Icon } from 'antd';
+import Icon from 'antd/lib/icon';
+import Slider from 'antd/lib/slider';
 import 'antd/dist/antd.css';
+// import 'antd/lib/Icon/style/css';
 import call from './music/thecall.mp3';
 import yesterday from './music/yesterday.mp3';
 
@@ -14,6 +17,7 @@ class MUsicBox extends Component {
           currentTime: 0, //初始化当前播放时间为0
           currentTotalTime: 3599,  //初始化当前歌曲总时间0
           playStatus: true,   //播放状态，false表示已暂停，true表示正在播放
+          playVolume: 0.8, //音量
           lists: [{
             "name": "Yesterday Once More",
             "artists": "Carpenter",
@@ -31,11 +35,14 @@ class MUsicBox extends Component {
        this.updatePlayStatus = this.updatePlayStatus.bind(this);
        this.previous = this.previous.bind(this);
        this.next = this.next.bind(this);
+       this.volumeChange=this.volumeChange.bind(this);
     }   
     updatePlayStatus(){     //根据状态来设置音乐播放还是暂停并且更新时间显示
         let audio = document.getElementById('audio');
         let vm = this; 
-        audio.addEventListener('onload',(function(){
+        //给audio添加侦听事件，待音频加载完成后读取总时间，但是尝试了onload等各种方法，duration读取始终有问题，无法达到加载完成后修改状态的效果
+        //所以增加设置了循环读取，知道读取到值为止
+        audio.addEventListener('onload',(function(){   
             if(isNaN(audio.duration)){
                 let si = setInterval(()=>{
                     if(!isNaN(audio.duration)){
@@ -60,45 +67,52 @@ class MUsicBox extends Component {
         }
         
     }
-    play(){   //播放事件
+    play(){   //播放与暂停事件
         this.setState({
             playStatus: !this.state.playStatus            
         },()=>{this.updatePlayStatus()});
     }
-    previous(){
+    previous(){   //上一首
         if(this.state.currentListIndex === 0){
-            // alert('已经是第一首了！');
+            alert('已经是第一首了！');
+            this.setState({
+                playStatus: false
+            });
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex - 1,
+                currentTime: 0
             },()=>{this.updatePlayStatus()});
         }
     }
-    next(){
+    next(){     //下一首
         if(this.state.currentListIndex + 1 >= this.state.lists.length){
-            // alert('已经是最后一首了！');
+            alert('已经是最后一首了！');
+            this.setState({
+                playStatus: false
+            });
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex + 1,
+                currentTime: 0
             },()=>{this.updatePlayStatus()});
         }
     }
-    componentDidMount(){
+    volumeChange(value){
+        let audio = document.getElementById('audio');
+        this.setState({
+            playVolume: value / 30 
+        },function(){
+            audio.volume=this.state.playVolume;
+        });
+    }
+
+    componentDidMount(){            //页面渲染后更新状态
         this.updatePlayStatus();
         let audio = document.getElementById('audio');
-        
-        // let vm=this;       
-        // audio.addEventListener('loadedmetadata',(function(){
-        //     console.log(audio);
-        //     console.log(audio.duration);
-        //     vm.setState({
-        //         currentTotalTime: audio.duration
-        //     });
-        //     console.log(1);
-        // })());
            
         setInterval(()=>{
-            if( this.state.currentTime >= this.state.currentTotalTime ){
+            if( this.state.currentTime >= this.state.currentTotalTime ){  //判断时间确定是否播放下一首歌
                 this.next();
             }else{
                 this.setState({
@@ -115,18 +129,26 @@ class MUsicBox extends Component {
         return (
             <div className="music-box">
                 <MusicInfo info={this.state.lists[this.state.currentListIndex]} />
-                <MuiscTime currentTime={this.state.currentTime} currentTotalTime={this.state.currentTotalTime} progress={this.state.currentTime / this.state.currentTotalTime * 100 +'%'}/>
-                <MusicControl isPlay={this.state.playStatus} onPlay={this.play} onPrev={this.previous} onNext={this.next} />
+                <MuiscTime 
+                    currentTime={this.state.currentTime} 
+                    currentTotalTime={this.state.currentTotalTime} 
+                    progress={this.state.currentTime / this.state.currentTotalTime * 100 +'%'}
+                />
+                <MusicControl 
+                    isPlay={this.state.playStatus} 
+                    onPlay={this.play} 
+                    onPrev={this.previous} 
+                    onNext={this.next}
+                    volumeChange={this.volumeChange} 
+                />
                 <audio id="audio" src={this.state.lists[this.state.currentListIndex].audio} ></audio>
             </div>
         );
     }
 }
 
-class MusicInfo extends Component {
-  
-    render(){
-       
+class MusicInfo extends Component {  //歌曲信息组件
+    render(){       
         return (
             <div>
                 <p className="music-name">
@@ -142,7 +164,7 @@ class MusicInfo extends Component {
         )
     }
 }
-class MuiscTime extends Component {
+class MuiscTime extends Component {     //播放时间及进度
     converTime(times){
         let minutes = Math.floor(times/60);
         let seconds = Math.floor(times%60);
@@ -165,13 +187,14 @@ class MuiscTime extends Component {
     }
 }
 
-class MusicControl extends Component {   
-  
-    render(){
-        
+class MusicControl extends Component {   //播放器控制器  
+    render(){        
         const buttontypes = this.props.isPlay === false ? "play-circle-o" : "pause-circle-o";
         return (
             <div className="controler">
+                <div className="contrvo">
+                    <Slider vertical defaultValue={24} max={30} onChange={this.props.volumeChange} />
+                </div>
                 <Icon type="fast-backward" className="n-p" onClick={this.props.onPrev} />
                 <Icon type={buttontypes} className="play" onClick={this.props.onPlay} />
                 <Icon type="fast-forward" className="n-p" onClick={this.props.onNext} />
@@ -180,15 +203,15 @@ class MusicControl extends Component {
     }
 }
 
-class App extends Component {
+class App extends Component {    //将播放器放入APP，在由app放入index
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={require('./images/play.png')} alt="music pictrue" className="App-logo" alt="logo" />
+          <img src={require('./images/play.png')} className="App-logo" alt="logo" />
           <h2>Let's Play Music!</h2>
         </div>
-        <MUsicBox />
+        <MUsicBox />       
       </div>
     );
   }
