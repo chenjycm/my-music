@@ -15,8 +15,8 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
           currentTotalTime: 3599,  //初始化当前歌曲总时间0
           playStatus: true,   //播放状态，false表示已暂停，true表示正在播放
           playVolume: 0.8, //音量 最小是0 最大是1
+          showList: false, //是否显示音乐列表
           lists: Music      //读取音乐列表到lists作为状态参数，正常应该设置为props参数，也可以在后面直接用Music（这里简化过程用了state，为了以后能够动态更新Music）
-        
        };
        //父组件所有的操作都要绑定一下，不然this可能会有问题
        this.play = this.play.bind(this);
@@ -26,6 +26,9 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
        this.volumeChange=this.volumeChange.bind(this);
        this.proChange=this.proChange.bind(this);
        this.timeChange=this.timeChange.bind(this);
+       this.changeDisplay=this.changeDisplay.bind(this);
+       this.getListId=this.getListId.bind(this);
+       this.hideList=this.hideList.bind(this);
     }   
     updatePlayStatus(){     //根据状态来设置音乐播放还是暂停并且更新时间显示
         let audio = document.getElementById('audio');
@@ -66,13 +69,13 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
         if(this.state.currentListIndex === 0){
             // alert('已经是第一首了！');
             this.setState({
-                playStatus: false,
-               
+                // playStatus: false, 
+                currentListIndex: this.state.lists.length - 1              
             });
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex - 1,
-                currentTime: 0
+                // currentTime: 0
             },()=>{this.updatePlayStatus()});
         }
     }
@@ -81,11 +84,11 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
         if(this.state.currentListIndex + 1 >= this.state.lists.length){
             // alert('已经是最后一首了！');
             this.setState({
-                playStatus: false,
+                // playStatus: false,
                 currentTime: 0,
                 currentListIndex: 0
             },()=>{this.updatePlayStatus()});
-            audio.currentTime = 0;
+            // audio.currentTime = 0;
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex + 1,
@@ -134,10 +137,37 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
             }
         },300);
     }
-
+    changeDisplay(){   //点击列表菜单，修改列表状态为显示或隐藏
+        this.setState({
+            showList: !this.state.showList
+        });
+    }
+    getListId(e){         //点击列表中的歌曲，并播放该歌曲，隐藏列表
+        let a = e.target.getAttribute('data-id');
+        this.setState({
+            currentListIndex: a,
+            showList: false        
+        },()=>{
+            this.updatePlayStatus();
+        });
+    }
+    hideList(){
+        this.setState({
+            showList: false
+        });
+    }
+    
     render(){       
         return (
             <div className="music-box">
+                <Musiclist 
+                    changeDisplay={this.changeDisplay}
+                    showList={this.state.showList} 
+                    lists={this.state.lists}
+                    getListId={this.getListId}
+                    currentListIndex={this.state.currentListIndex}
+                    hideList={this.hideList}
+                />
                 <MusicInfo info={this.state.lists[this.state.currentListIndex]} />
                 <MuiscTime 
                     currentTime={this.state.currentTime} 
@@ -163,7 +193,7 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
 class MusicInfo extends Component {  //歌曲信息组件
     render(){       
         return (
-            <div>
+            <div className="music-info">
                 <p className="music-name">
                     {this.props.info.name ? this.props.info.name : '未知曲名'}
                 </p>
@@ -214,7 +244,32 @@ class MusicControl extends Component {   //播放器控制器
                 </div>
                 <Icon type="fast-backward" className="n-p" onClick={this.props.onPrev} />
                 <Icon type={buttontypes} className="play" onClick={this.props.onPlay} />
-                <Icon type="fast-forward" className="n-p" onClick={this.props.onNext} />
+                <Icon type="fast-forward" className="n-p" onClick={this.props.onNext} />                
+            </div>
+        )
+    }
+}
+
+class Musiclist extends Component {  //播放列表组件。原本想把showList作为子组件的状态，把hideList设置为子组件方法，
+    render(){                        //但是getListId需要更新歌曲还要隐藏列表设置状态showList,如果把showList从getListId剥离出来，
+        return (                       //放在子组件，<li>点击事件需要执行两个事件，一个是更新父组件状态，二一个是更本组件状态，onClick写两个就有问题。
+            <div className="musiclist">     
+                <Icon type="bars" className="music-listbtn" onClick={this.props.changeDisplay}/>
+                <ul id="lists" className={this.props.showList ? 'listshowing' : 'listhide'} onMouseLeave={this.props.hideList}>
+                    {
+                        this.props.lists.map((item)=>{
+                            return (<li 
+                                    className={(this.props.currentListIndex != item.id ) ? '' : 'active'} 
+                                    data-id={item.id} 
+                                    key={item.id} 
+                                    onClick={this.props.getListId}>
+                                    {item.name}-{item.artists}
+                                    </li>
+                                );
+                            }
+                        )
+                    }                   
+                </ul>
             </div>
         )
     }

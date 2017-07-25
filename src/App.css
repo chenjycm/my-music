@@ -23,6 +23,7 @@
   font-size: large;
 }
 .music-box{
+    position: relative;
     width: 430px;
     height: 540px;
     background-color: #888;
@@ -35,15 +36,20 @@
     box-shadow: 10px 10px 7px #dad0d0;
 }
 /*音乐信息*/
+
 .music-name{
+    width: 70%;
+    margin: 0 auto;
     font-size: 20px;
     color: #fff;
-    margin: 0;
+    overflow: hidden;
 }
 .singer{
+    width: 70%;
+    margin: 0 auto;
     font-size: 16px;
     color: #fff;
-    margin: 0;
+    overflow: hidden;
 }
 /*音乐图片*/
 .music-pic{
@@ -159,8 +165,66 @@
     border: solid 2px #4a4d50 !important;
 }
 .ant-slider-track {
-    background-color: #4a4d50 !important;
+    background-color: #82c0ca !important;
 }
+/*音乐列表*/
+
+.music-listbtn{
+    position: absolute;
+    top: 22px;
+    left: 30px;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.listshowing{
+    visibility: visible;
+    opacity: 1;  
+    position: absolute;
+    top: 56px;
+    width: 86%;
+    margin-left: 7%;
+    margin-right: 7%;
+    padding: 10px 0;  
+    height: 63%;
+    background: #fff;
+    border-radius: 4px;
+    transition: all 0.5s;
+}
+.listshowing li{
+    visibility: visible;
+    opacity: 1;  
+    text-align: left;
+    font-size: 16px;
+    padding:5px 10px;
+    border-bottom: 1px solid #efefeb;
+    /*border-radius: 4px; */
+    /*transition: all 1s; */
+}
+.listhide{
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    position: absolute;
+    top: 57px;
+    width: 86%;
+    margin-left: 7%;
+    margin-right: 7%; 
+    transition: all 0.5s;
+}
+.listhide li{
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+}
+#lists li:hover{
+    background-color: #e2e2e0;
+}
+#lists .active{
+    background-color: #b7e5ff;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
@@ -168,11 +232,10 @@
 @media screen and (max-width: 440px) {
     .music-box{
         width: 98%;
-        height: 490px;
+        height: 540px;
     }
     .music-pic{
         width: 85%;
-        height: 250px;
     }
     .controler{
         width: 90%;
@@ -180,12 +243,15 @@
     .play{
         margin: 10px 12%;
     }
-    .music-pic img {
-    max-width: 100%;
-    max-height: 100%;
-    min-width: 100%;
-    min-height: initial;
-
+    .music-pic img {       
+        min-height: initial;
+    }
 }
-
+@media screen and (max-width: 400px) {
+    .music-box{       
+        height: 480px;
+    }
+    .music-pic{
+        height: 250px;
+    }
 }
