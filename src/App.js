@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import './App.css';             //页面css
 import Icon from 'antd/lib/icon';       //引入播放按钮样式
 import Slider from 'antd/lib/slider';   //引入滑动条样式
+import message from 'antd/lib/message'
 import 'antd/dist/antd.css';            //引入antd的css
 import Music from './music.js';         //引入 音乐列表 ，将音乐列表独立出来，方便后台读取文件，不然要import很多文件
 
 
-class MUsicBox extends Component {    //定义了一个音乐组件，其包含很多个子组件
+class MusicBox extends React.Component {    //定义了一个音乐组件，其包含很多个子组件
     constructor(){
        super();
        this.state = {
@@ -51,7 +52,6 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
                 });
             }
         })());
-        // console.log(audio.duration);
         if(this.state.playStatus){
             audio.play();
         
@@ -68,9 +68,11 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
     previous(){   //上一首
         if(this.state.currentListIndex === 0){
             // alert('已经是第一首了！');
-            this.setState({
-                // playStatus: false, 
-                currentListIndex: this.state.lists.length - 1              
+            message.warning('已是第一首歌，将跳转到最后一首！',2,()=>{
+                this.setState({
+                    // playStatus: false, 
+                    currentListIndex: this.state.lists.length - 1              
+                });
             });
         }else{
             this.setState({
@@ -80,15 +82,16 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
         }
     }
     next(){     //下一首
-        let audio = document.getElementById('audio');
+        // let audio = document.getElementById('audio');
         if(this.state.currentListIndex + 1 >= this.state.lists.length){
             // alert('已经是最后一首了！');
-            this.setState({
-                // playStatus: false,
-                currentTime: 0,
-                currentListIndex: 0
-            },()=>{this.updatePlayStatus()});
-            // audio.currentTime = 0;
+            message.warning('已是最后一首歌，将跳转到第一首！',2,()=>{
+                this.setState({
+                    // playStatus: false,
+                    currentTime: 0,
+                    currentListIndex: 0
+                },()=>{this.updatePlayStatus()});
+            });
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex + 1,
@@ -184,11 +187,16 @@ class MUsicBox extends Component {    //定义了一个音乐组件，其包含�
                     volumeChange={this.volumeChange}
                 />
                 <audio id="audio" src={this.state.lists[this.state.currentListIndex].audio} >您的浏览器不支持 audio 标签，无法播放。</audio>
-                {/*<audio id="audio" src={Music.mylove} >您的浏览器不支持 audio 标签，无法播放。</audio>*/}
             </div>
         );
     }
 }
+
+
+
+// MusicBox.defaultProps={proplists: Music};  
+//定义了一个props参数，存入音乐list（与state中的lists一样的值），留着以后用
+
 
 class MusicInfo extends Component {  //歌曲信息组件
     render(){       
@@ -283,7 +291,7 @@ class App extends Component {    //将播放器放入APP，在由app放入index
           <img src={require('./images/play.png')} className="App-logo" alt="logo" />
           <h2>Let's Play Music!</h2>
         </div>
-        <MUsicBox />       
+        <MusicBox />       
       </div>
     );
   }

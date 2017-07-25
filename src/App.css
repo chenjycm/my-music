@@ -224,7 +224,9 @@
 #lists .active{
     background-color: #b7e5ff;
 }
-
+.ant-message{
+    top: 270px !important;
+}
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
