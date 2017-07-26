@@ -177,7 +177,14 @@
     font-size: 30px;
     cursor: pointer;
 }
-
+.music-search{
+    position: absolute;
+    top: 22px;
+    right: 30px;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+}
 .listshowing{
     visibility: visible;
     opacity: 1;  
@@ -192,11 +199,15 @@
     border-radius: 4px;
     transition: all 0.5s;
 }
+.listshowing ul{
+    overflow-y: scroll;
+    height: 290px;
+}
 .listshowing li{
     visibility: visible;
     opacity: 1;  
     text-align: left;
-    font-size: 16px;
+    font-size: 13px;
     padding:5px 10px;
     border-bottom: 1px solid #efefeb;
     /*border-radius: 4px; */
@@ -218,6 +229,7 @@
     opacity: 0;
     height: 0;
 }
+
 #lists li:hover{
     background-color: #e2e2e0;
 }
@@ -226,6 +238,23 @@
 }
 .ant-message{
     top: 270px !important;
+}
+.serchinput{
+    width: 88% !important;
+    margin: 5px 0;
+}
+.searchAdd{
+    color: #9297a2;
+    font-size: 16px;
+    cursor: pointer;
+    float: right;
+    line-height: 20px !important;
+}
+.closeList{
+    color: #9297a2;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 7px;
 }
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
@@ -255,5 +284,9 @@
     }
     .music-pic{
         height: 250px;
+    }
+    .listshowing ul{
+        overflow-y: scroll;
+        height: 256px;
     }
 }
