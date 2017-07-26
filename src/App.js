@@ -69,14 +69,12 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
         if(this.state.currentListIndex === 0){
             message.warning('已是第一首歌，将跳转到最后一首！',2,()=>{
                 this.setState({
-                    // playStatus: false, 
                     currentListIndex: this.state.lists.length - 1              
-                });
+                },()=>{this.updatePlayStatus()});
             });
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex - 1,
-                // currentTime: 0
             },()=>{this.updatePlayStatus()});
         }
     }
@@ -133,7 +131,7 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
             if( this.state.currentTime >= this.state.currentTotalTime ){  //判断时间确定是否播放下一首歌
                 this.next();
             }else{
-                vm.setState({
+                this.setState({
                     currentTime: audio.currentTime,
                     // currentTotalTime: audio.duration
                 });
