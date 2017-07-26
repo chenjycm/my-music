@@ -67,7 +67,6 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
     }
     previous(){   //上一首
         if(this.state.currentListIndex === 0){
-            // alert('已经是第一首了！');
             message.warning('已是第一首歌，将跳转到最后一首！',2,()=>{
                 this.setState({
                     // playStatus: false, 
@@ -84,7 +83,7 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
     next(){     //下一首
         // let audio = document.getElementById('audio');
         if(this.state.currentListIndex + 1 >= this.state.lists.length){
-            // alert('已经是最后一首了！');
+ 
             message.warning('已是最后一首歌，将跳转到第一首！',2,()=>{
                 this.setState({
                     // playStatus: false,
@@ -99,6 +98,7 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
             },()=>{this.updatePlayStatus()});
         }
     }
+
     volumeChange(value){        // 修改音量
         let audio = document.getElementById('audio');
         this.setState({
@@ -133,13 +133,14 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
             if( this.state.currentTime >= this.state.currentTotalTime ){  //判断时间确定是否播放下一首歌
                 this.next();
             }else{
-                this.setState({
+                vm.setState({
                     currentTime: audio.currentTime,
                     // currentTotalTime: audio.duration
                 });
             }
         },300);
     }
+
     getListId(e){         //点击列表中的歌曲，并播放该歌曲，隐藏列表
         let a = e.getAttribute('data-id');
         this.setState({
