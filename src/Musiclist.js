@@ -18,6 +18,7 @@ class Musiclist extends Component {  //播放列表组件。
         this.searchMusic=this.searchMusic.bind(this);
         this.addMusic=this.addMusic.bind(this);
         this.closeList=this.closeList.bind(this);
+        this.doNotDo=this.doNotDo.bind(this);
     }
     listDisplay(){   //点击列表菜单，修改列表状态为显示或隐藏
         this.setState({
@@ -74,6 +75,12 @@ class Musiclist extends Component {  //播放列表组件。
             showList: false           
         });
     }
+    doNotDo(e){         //阻止冒泡，实现点击list框内不隐藏
+        e.nativeEvent.stopImmediatePropagation();
+    }
+    componentDidMount(){
+        document.onclick = this.closeList;   //添加点击document 关闭list框
+    }
     render(){          
         const musiclist = this.props.lists.map((item,index)=>{
             return (<li 
@@ -115,7 +122,7 @@ class Musiclist extends Component {  //播放列表组件。
             </div>
         ); 
         return (                      
-            <div className="musiclist">     
+            <div className="musiclist" onClick={this.doNotDo}>     
                 <Icon type="bars" className="music-listbtn" onClick={this.listDisplay}/>                
                 <Icon type="search" className="music-search" onClick={this.searchDisplay}/>
                

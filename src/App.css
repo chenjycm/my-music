@@ -202,6 +202,7 @@
 .listshowing ul{
     overflow-y: scroll;
     height: 290px;
+    transition: all 0.5s;
 }
 .listshowing li{
     visibility: visible;
@@ -223,6 +224,11 @@
     margin-left: 7%;
     margin-right: 7%; 
     transition: all 0.5s;
+}
+.listhide ul{
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
 }
 .listhide li{
     visibility: hidden;

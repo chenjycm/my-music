@@ -4,7 +4,6 @@ import './App.css';             //页面css
 import Icon from 'antd/lib/icon';       //引入播放按钮样式
 import Slider from 'antd/lib/slider';   //引入滑动条样式
 import message from 'antd/lib/message';
-import Input from 'antd/lib/input';
 import 'antd/dist/antd.css';            //引入antd的css
 import Musiclist from './Musiclist.js'
 import Music from './music.js';         //引入 音乐列表 ，将音乐列表独立出来，方便后台读取文件，不然要import很多文件
@@ -22,8 +21,9 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
           lists: Music      //读取音乐列表到lists作为状态参数，正常应该设置为props参数，也可以在后面直接用Music（这里简化过程用了state，为了以后能够动态更新Music）
        };
        //父组件所有的操作都要绑定一下，不然this可能会有问题
-       this.play = this.play.bind(this);
        this.updatePlayStatus = this.updatePlayStatus.bind(this);
+       this.timeInterval=this.timeInterval.bind(this);
+       this.play = this.play.bind(this);
        this.previous = this.previous.bind(this);
        this.next = this.next.bind(this);
        this.volumeChange=this.volumeChange.bind(this);
@@ -41,8 +41,19 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
         
         }else{
             audio.pause();
-        }
-        
+        }        
+    }
+    timeInterval(){
+        let audio = this.refs.audio;  
+        this.timer = setInterval(()=>{
+            if( this.state.currentTime >= this.state.currentTotalTime ){  //判断时间确定是否播放下一首歌
+                this.next();
+            }else{
+                this.setState({
+                    currentTime: audio.currentTime,
+                });
+            }
+        },500);
     }
     play(){   //播放与暂停事件
         this.setState({
@@ -52,7 +63,7 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
     previous(){   //上一首
         
         if(this.state.currentListIndex === 0){
-            message.warning('已是第一首歌，将跳转到最后一首！',2,()=>{
+            message.warning('已是第一首歌，将跳转到最后一首！',1,()=>{
                 this.setState({
                     currentListIndex: this.state.lists.length - 1 
                 },()=>{this.updatePlayStatus()});
@@ -64,12 +75,12 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
         }
     }
     next(){     //下一首
-        if(this.state.currentListIndex + 1 >= this.state.lists.length){
- 
-            message.warning('已是最后一首歌，将跳转到第一首！',2,()=>{
+        if(this.state.currentListIndex + 1 >= this.state.lists.length){ 
+            message.warning('已是最后一首歌，将跳转到第一首！',1,()=>{
                 this.setState({
                     currentTime: 0,
-                    currentListIndex: 0
+                    currentListIndex: 0,
+                    // playStatus: false
                 },()=>{this.updatePlayStatus()});
             });
         }else{
@@ -121,57 +132,29 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
             let nextlist = this.state.lists.slice(); //读取lists中的数组
             var ex = 0 ;
             for(let key in nextlist){
-                if(nextlist[key].id == data.id){
+                if(nextlist[key].id === data.id){
                    ex++;
                 }               
             }
             if(ex === 0){
                 nextlist.push(data);   //新数组中插入数据
-                this.setState({         //更新数组状态
-                    lists : nextlist,
-                });
+                this.setState({        
+                    lists : nextlist,   //更新数组状态
+                },()=>{let a = this.state.lists.length});
             }           
         }
     }
     componentDidMount(){            //页面渲染后更新状态
         this.updatePlayStatus();
-        // let audio = document.getElementById('audio'); 
         let audio = this.refs.audio;    //新写法，尽量少对dom操作
         let vm = this; 
-        let box = this.refs.musicbox;
-      
-        //给audio添加侦听事件，待音频加载完成后读取总时间，但是尝试了onload等各种方法，duration读取始终有问题，无法达到加载完成后修改状态的效果
-        //所以增加设置了循环读取，知道读取到值为止
-        // audio.addEventListener('onload',(function(){   
-        //     if(isNaN(audio.duration)){
-        //         let si = setInterval(()=>{
-        //             if(!isNaN(audio.duration)){
-        //                 clearInterval(si);
-        //                 vm.setState({
-        //                     currentTotalTime: audio.duration
-        //                 },()=>audio.volume=vm.state.playVolume);
-        //             }
-        //         },200);
-        //     }else{
-        //         vm.setState({
-        //             currentTotalTime: audio.duration
-        //         },()=>audio.volume=vm.state.playVolume);
-        //     }
-        // })());
-        audio.addEventListener('loadedmetadata',function(){  //换个侦听方式解决上面问题
+        this.timeInterval();
+        audio.addEventListener('loadedmetadata',function(){  //添加侦听事件
             vm.setState({
                 currentTotalTime: audio.duration
             },()=>audio.volume=vm.state.playVolume);
-        });
-        setInterval(()=>{
-            if( this.state.currentTime >= this.state.currentTotalTime ){  //判断时间确定是否播放下一首歌
-                this.next();
-            }else{
-                this.setState({
-                    currentTime: audio.currentTime,
-                });
-            }
-        },200);
+        });        
+
     }
 
     render(){       
