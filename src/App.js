@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-// import axios from 'axios';
 import './App.css';             //页面css
-import Icon from 'antd/lib/icon';       //引入播放按钮样式
-import Slider from 'antd/lib/slider';   //引入滑动条样式
 import message from 'antd/lib/message';
 import 'antd/dist/antd.css';            //引入antd的css
-import Musiclist from './Musiclist.js'
+import Musiclist from './Musiclist.js';
+import MusicInfo from './MusicInfo.js';
+import MusicTime from './MusicTime.js';
+import MusicControl from './MusicControl.js'
 import Music from './music.js';         //引入 音乐列表 ，将音乐列表独立出来，方便后台读取文件，不然要import很多文件
 
 
@@ -22,15 +22,16 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
        };
        //父组件所有的操作都要绑定一下，不然this可能会有问题
        this.updatePlayStatus = this.updatePlayStatus.bind(this);
-       this.timeInterval=this.timeInterval.bind(this);
+       this.timeInterval = this.timeInterval.bind(this);
        this.play = this.play.bind(this);
        this.previous = this.previous.bind(this);
        this.next = this.next.bind(this);
-       this.volumeChange=this.volumeChange.bind(this);
-       this.proChange=this.proChange.bind(this);
-       this.timeChange=this.timeChange.bind(this);
-       this.getListId=this.getListId.bind(this);
-       this.updateList=this.updateList.bind(this);
+       this.volumeChange = this.volumeChange.bind(this);
+       this.proChange = this.proChange.bind(this);
+       this.timeChange = this.timeChange.bind(this);
+       this.getListId = this.getListId.bind(this);
+       this.updateList = this.updateList.bind(this);
+       this.deleteList = this.deleteList.bind(this);
     }   
    
     updatePlayStatus(){     //根据状态来设置音乐播放还是暂停并且更新时间显示
@@ -65,12 +66,14 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
         if(this.state.currentListIndex === 0){
             message.warning('已是第一首歌，将跳转到最后一首！',1,()=>{
                 this.setState({
-                    currentListIndex: this.state.lists.length - 1 
+                    currentListIndex: this.state.lists.length - 1 ,
+                    currentTime: 0
                 },()=>{this.updatePlayStatus()});
             });
         }else{
             this.setState({
                 currentListIndex : this.state.currentListIndex - 1,
+                currentTime: 0
             },()=>{this.updatePlayStatus()});
         }
     }
@@ -78,8 +81,8 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
         if(this.state.currentListIndex + 1 >= this.state.lists.length){ 
             message.warning('已是最后一首歌，将跳转到第一首！',1,()=>{
                 this.setState({
-                    currentTime: 0,
                     currentListIndex: 0,
+                    currentTime: 0,
                     // playStatus: false
                 },()=>{this.updatePlayStatus()});
             });
@@ -121,11 +124,15 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
    
     getListId(e){         //点击列表中的歌曲，并播放该歌曲，隐藏列表
         let a = e.getAttribute('data-id');
-        this.setState({
-            currentListIndex: a,
-        },()=>{
-            this.updatePlayStatus();
-        });
+        let b = this.state.lists;
+        for(let key in b){
+            if(b[key].id == a){
+                this.setState({
+                      currentListIndex: +key,
+                },()=>{ this.updatePlayStatus(); });
+            }
+        }
+       
     }
     updateList(data){
         if(data){
@@ -140,8 +147,23 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
                 nextlist.push(data);   //新数组中插入数据
                 this.setState({        
                     lists : nextlist,   //更新数组状态
-                },()=>{let a = this.state.lists.length});
+                });
             }           
+        }
+    }
+    deleteList(mid){
+        if(this.state.lists.length > 1){
+            let nextlist = this.state.lists.slice();
+            for(let key in nextlist){
+                if(nextlist[key].id == mid ){
+                    nextlist.splice(key,1);                  
+                    this.setState({        
+                        lists : nextlist,   //更新数组状态
+                    });
+                }
+            }
+        }else{
+             message.warning('留一首看家吧！',1);
         }
     }
     componentDidMount(){            //页面渲染后更新状态
@@ -158,6 +180,7 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
     }
 
     render(){       
+        console.log(this.state.lists, +this.state.currentListIndex)
         return (
             <div className="music-box" id="music-box" ref="musicbox">
                 <Musiclist 
@@ -166,9 +189,10 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
                     currentListIndex={this.state.currentListIndex}
                     hideList={this.hideList}
                     updateList={this.updateList}
+                    deleteList={this.deleteList}
                 />
                 <MusicInfo info={this.state.lists[this.state.currentListIndex]} />
-                <MuiscTime 
+                <MusicTime 
                     currentTime={this.state.currentTime} 
                     currentTotalTime={this.state.currentTotalTime} 
                     progress={this.state.currentTime / this.state.currentTotalTime}
@@ -182,71 +206,17 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
                     onNext={this.next}
                     volumeChange={this.volumeChange}
                 />
-                <audio id="audio" ref='audio' src={this.state.lists[this.state.currentListIndex].audio} type="audio/mp4" >您的浏览器不支持 "audio"标签，无法播放。</audio>
+               
+                <audio id="audio" ref='audio' src={this.state.lists[+this.state.currentListIndex].audio} type="audio/mp4" >
+                    您的浏览器不支持 "audio"标签，无法播放。
+                </audio>
+               
             </div>
         );
     }
 }
 
-class MusicInfo extends Component {  //歌曲信息组件
-    render(){       
-        return (
-            <div className="music-info">
-                <p className="music-name">
-                    {this.props.info.name ? this.props.info.name : '未知曲名'}
-                </p>
-                <p className="singer">
-                    {this.props.info.artists ? this.props.info.artists : '未知艺术家'}
-                </p>
-                <div className="music-pic">
-                    <img src={this.props.info.img} alt="music-pic"/>
-                </div>
-            </div>
-        )
-    }
-}
-class MuiscTime extends Component {     //播放时间及进度
-    converTime(times){              //将时间长度转化为时间格式
-        let minutes = Math.floor(times/60);
-        let seconds = Math.floor(times%60);
-        if(minutes < 10 ){
-            minutes = '0'+minutes;
-        }
-        if(seconds < 10){
-            seconds = '0'+seconds;
-        }
-        return minutes+':'+seconds ;
-    }
-    render(){
-        return (
-            <div className="timeline">
-               <span>{this.converTime(this.props.currentTime)}</span>
-             
-                    <div className="prodrag">
-                        <Slider max={2000} value={this.props.progress * 2000} onChange={this.props.timeChange} onAfterChange={this.props.proChange} tipFormatter={false}/>
-                    </div>
-               
-               <span>{this.converTime(this.props.currentTotalTime) }</span>                
-            </div>
-        )
-    }
-}
 
-class MusicControl extends Component {   //播放器控制器  
-    render(){        
-        const buttontypes = this.props.isPlay === false ? "play-circle-o" : "pause-circle-o";
-        return (
-            <div className="controler">
-                <div className="contrvo">
-                    <Slider vertical defaultValue={15} max={30} onChange={this.props.volumeChange} />
-                </div>
-                <Icon type="fast-backward" className="n-p" onClick={this.props.onPrev} />
-                <Icon type={buttontypes} className="play" onClick={this.props.onPlay} />
-                <Icon type="fast-forward" className="n-p" onClick={this.props.onNext} />                
-            </div>
-        )
-    }
-}
 
 class App extends Component {    //将播放器放入APP，在由app放入index
   render() {

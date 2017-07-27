@@ -19,6 +19,7 @@ class Musiclist extends Component {  //播放列表组件。
         this.addMusic=this.addMusic.bind(this);
         this.closeList=this.closeList.bind(this);
         this.doNotDo=this.doNotDo.bind(this);
+        this.delList=this.delList.bind(this);
     }
     listDisplay(){   //点击列表菜单，修改列表状态为显示或隐藏
         this.setState({
@@ -35,7 +36,7 @@ class Musiclist extends Component {  //播放列表组件。
         });         
     }
     hideList(e){
-        const event = e.target;
+        const event = e.target.parentNode;
         this.setState({
             showList: false
         },this.props.getListId(event));     //在子组件中调用父组件的方法，修改父组件的状态
@@ -81,14 +82,19 @@ class Musiclist extends Component {  //播放列表组件。
     componentDidMount(){
         document.onclick = this.closeList;   //添加点击document 关闭list框
     }
+    delList(e){
+        let id = e.target.parentNode.getAttribute('data-id');
+        this.props.deleteList(id);
+    }
     render(){          
         const musiclist = this.props.lists.map((item,index)=>{
             return (<li 
                     className={(this.props.currentListIndex != index ) ? '' : 'active'} 
-                    data-id={index} 
+                    data-id={item.id} 
                     key={item.id} 
-                    onClick={this.hideList}>
-                    {item.name}-{item.artists}
+                   >
+                    <span className="musictitle" onClick={this.hideList}>{item.name}-{item.artists}</span>
+                    <Icon type="minus-circle-o" className="listsbtn" onClick={this.delList} />
                     </li>
                 );
             }
@@ -105,7 +111,7 @@ class Musiclist extends Component {  //播放列表组件。
                             data-img={item.albumpic_big}
                             data-audio={item.m4a}                                        
                             >
-                            {item.songname}-{item.singername}<Icon type="plus-circle-o" className="searchAdd" onClick={this.addMusic} />
+                            <span>{item.songname}-{item.singername}</span><Icon type="plus-circle-o" className="listsbtn" onClick={this.addMusic} />
                         </li>
                     )
                 })

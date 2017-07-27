@@ -205,14 +205,19 @@
     transition: all 0.5s;
 }
 .listshowing li{
+    position: relative;
     visibility: visible;
     opacity: 1;  
     text-align: left;
     font-size: 13px;
     padding:5px 10px;
-    border-bottom: 1px solid #efefeb;
-    /*border-radius: 4px; */
-    /*transition: all 1s; */
+    border-bottom: 1px solid #efefeb;   
+}
+.listshowing li span{
+    display: inline-block;
+    width: 94%;
+    vertical-align: middle;
+    word-break: break-all;
 }
 .listhide{
     visibility: hidden;
@@ -245,16 +250,26 @@
 .ant-message{
     top: 270px !important;
 }
+.musictitle{
+    cursor: pointer;
+}
 .serchinput{
     width: 88% !important;
     margin: 5px 0;
 }
-.searchAdd{
+/*.searchAdd{
+    width: 6%;
+    vertical-align: middle !important;
     color: #9297a2;
     font-size: 16px;
     cursor: pointer;
-    float: right;
-    line-height: 20px !important;
+}*/
+.listsbtn{
+    width: 6%;
+    vertical-align: middle !important;
+    color: #9297a2;
+    font-size: 16px;
+    cursor: pointer;
 }
 .closeList{
     color: #9297a2;

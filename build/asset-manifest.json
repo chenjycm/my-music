@@ -1,11 +1,9 @@
 {
-  "main.css": "static/css/main.eb08f1cc.css",
-  "main.css.map": "static/css/main.eb08f1cc.css.map",
-  "main.js": "static/js/main.2d66d0f8.js",
-  "main.js.map": "static/js/main.2d66d0f8.js.map",
+  "main.css": "static/css/main.870bd941.css",
+  "main.css.map": "static/css/main.870bd941.css.map",
+  "main.js": "static/js/main.82bffff4.js",
+  "main.js.map": "static/js/main.82bffff4.js.map",
   "static\\media\\bg.jpg": "static/media/bg.417d4fc2.jpg",
-  "static\\media\\mylove.mp3": "static/media/mylove.103eac2e.mp3",
   "static\\media\\play.png": "static/media/play.1beeeb19.png",
-  "static\\media\\thecall.mp3": "static/media/thecall.c9949ef3.mp3",
-  "static\\media\\yesterday.mp3": "static/media/yesterday.fac6d87a.mp3"
+  "static\\media\\temp.png": "static/media/temp.cd7cd623.png"
 }
