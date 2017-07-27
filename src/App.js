@@ -35,7 +35,6 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
     }   
    
     updatePlayStatus(){     //根据状态来设置音乐播放还是暂停并且更新时间显示
-        // let audio = document.getElementById('audio'); 
         let audio = this.refs.audio;
         if(this.state.playStatus){
             audio.play();
@@ -180,7 +179,6 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
     }
 
     render(){       
-        console.log(this.state.lists, +this.state.currentListIndex)
         return (
             <div className="music-box" id="music-box" ref="musicbox">
                 <Musiclist 
