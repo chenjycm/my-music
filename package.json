@@ -2,7 +2,6 @@
   "name": "my-music",
   "version": "0.1.0",
   "private": true,
-  "homepage" : "/build",
   "dependencies": {
     "antd": "^2.12.1",
     "axios": "^0.16.2",
