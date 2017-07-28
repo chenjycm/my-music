@@ -175,11 +175,11 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
                 currentTotalTime: audio.duration
             },()=>audio.volume=vm.state.playVolume);
         });        
-        setTimeout(
-            this.setState({
-                playStatus: true,
-            },()=>{this.updatePlayStatus()})
-        ,1000);
+        // setTimeout(
+        //     this.setState({
+        //         playStatus: true,
+        //     },()=>{this.updatePlayStatus()})
+        // ,1000);
     }
 
     render(){       
