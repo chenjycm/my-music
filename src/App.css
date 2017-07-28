@@ -203,7 +203,7 @@
 }
 .listshowing ul{
     overflow-y: scroll;
-    height: 290px;
+    max-height: 290px;
     transition: all 0.5s;
 }
 .listshowing li{
@@ -212,7 +212,7 @@
     opacity: 1;  
     text-align: left;
     font-size: 13px;
-    padding:5px 10px;
+    padding:5px 20px;
     border-bottom: 1px solid #efefeb;   
 }
 .listshowing li span{
@@ -256,16 +256,10 @@
     cursor: pointer;
 }
 .serchinput{
-    width: 88% !important;
+    width: 92% !important;
     margin: 5px 0;
 }
-/*.searchAdd{
-    width: 6%;
-    vertical-align: middle !important;
-    color: #9297a2;
-    font-size: 16px;
-    cursor: pointer;
-}*/
+
 .listsbtn{
     width: 6%;
     vertical-align: middle !important;
@@ -310,6 +304,6 @@
     }
     .listshowing ul{
         overflow-y: scroll;
-        height: 256px;
+        max-height: 256px;
     }
 }

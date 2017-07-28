@@ -7,10 +7,10 @@ class Musiclist extends Component {  //播放列表组件。
     constructor(props){
         super(props);
         this.state = {
-            showList: false,
-            listshow: false,
-            serchshow: false,
-            serchresult: ''
+            showList: false,    //显示列表框
+            listshow: false,     //显示播放列表内容
+            searchshow: false,    //显示搜索列表内容
+            searchresult: ''       //存储搜索结果
         }
         this.listDisplay = this.listDisplay.bind(this);
         this.hideList = this.hideList.bind(this);
@@ -25,14 +25,14 @@ class Musiclist extends Component {  //播放列表组件。
         this.setState({
             showList: !this.state.showList,
             listshow: true,
-            serchshow: false
+            searchshow: false
         });
     }
     searchDisplay(){
         this.setState({
             showList: !this.state.showList,
             listshow: false,
-            serchshow: true
+            searchshow: true
         });         
     }
     hideList(e){
@@ -49,7 +49,7 @@ class Musiclist extends Component {  //播放列表组件。
             .then(function(res){
                 let data = res.data.showapi_res_body.pagebean.contentlist;
                 vm.setState({
-                    serchresult: data,
+                    searchresult: data,
                 });
             })
             .catch(function(err){
@@ -100,8 +100,8 @@ class Musiclist extends Component {  //播放列表组件。
             }
         );
         const Search = Input.Search;
-        const slist = this.state.serchresult ?
-            this.state.serchresult.map((item)=>{
+        const slist = this.state.searchresult ?
+            this.state.searchresult.map((item)=>{
                     return (
                         <li
                             key={item.songid}
@@ -118,12 +118,7 @@ class Musiclist extends Component {  //播放列表组件。
             : '';
                         
         const searchlist = (
-            <div>
-                <Search 
-                    className="serchinput"
-                    placeholder="输入歌曲名或者歌手名"
-                    onSearch={ value => this.searchMusic(value) }
-                    />
+            <div>               
                 {slist}
             </div>
         ); 
@@ -133,7 +128,13 @@ class Musiclist extends Component {  //播放列表组件。
                 <Icon type="search" className="music-search" onClick={this.searchDisplay}/>
                
                     <div id="lists" className={this.state.showList ? 'listshowing' : 'listhide'} >
-                        <Icon type="close-circle-o" className="closeList" onClick={this.closeList} />
+                        
+                        { this.state.searchshow ?  <Search 
+                            className="serchinput"
+                            placeholder="输入歌曲名或者歌手名"
+                            onSearch={ value => this.searchMusic(value) }
+                            /> : <Icon type="close-circle-o" className="closeList" onClick={this.closeList} />
+                        }
                         <ul>{
                             this.state.listshow ? musiclist : searchlist
                         }
