@@ -16,7 +16,7 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
           currentListIndex: 0, //初始化加载第一首歌曲
           currentTime: 0, //初始化当前播放时间为0
           currentTotalTime: 3599,  //初始化当前歌曲总时间0
-          playStatus: true,   //播放状态，false表示已暂停，true表示正在播放
+          playStatus: false,   //播放状态，false表示已暂停，true表示正在播放
           playVolume: 0.5, //音量 最小是0 最大是1
           lists: Music      //读取音乐列表到lists作为状态参数，正常应该设置为props参数，也可以在后面直接用Music（这里简化过程用了state，为了以后能够动态更新Music）
        };
@@ -175,7 +175,11 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
                 currentTotalTime: audio.duration
             },()=>audio.volume=vm.state.playVolume);
         });        
-
+        setTimeout(
+            this.setState({
+                playStatus: true,
+            },()=>{this.updatePlayStatus()})
+        ,1000);
     }
 
     render(){       
