@@ -45,7 +45,7 @@ class Musiclist extends Component {  //播放列表组件。
     searchMusic(name){
         let vm = this;
         if(name){
-            axios.get('http://route.showapi.com/213-1?showapi_appid=42818&showapi_sign=fec952c9ebbb40399437efcff818f458&keyword='+name+'&page=1&')
+            axios.get('https://route.showapi.com/213-1?showapi_appid=42818&showapi_sign=fec952c9ebbb40399437efcff818f458&keyword='+name+'&page=1&')
             .then(function(res){
                 let data = res.data.showapi_res_body.pagebean.contentlist;
                 vm.setState({
