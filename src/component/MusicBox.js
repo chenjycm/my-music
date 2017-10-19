@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import './App.css';             //页面css
 import message from 'antd/lib/message';
 import 'antd/dist/antd.css';            //引入antd的css
-import Musiclist from './Musiclist.js';
+import Musiclist from './Musiclist';
 import MusicInfo from './MusicInfo.js';
 import MusicTime from './MusicTime.js';
 import MusicControl from './MusicControl.js'
-import Music from './music.js';         //引入 音乐列表 ，将音乐列表独立出来，方便后台读取文件，不然要import很多文件
-
+import Music from '../music/music';         //引入 音乐列表 ，将音乐列表独立出来，方便后台读取文件，不然要import很多文件
 
 class MusicBox extends React.Component {    //定义了一个音乐组件，其包含很多个子组件
     constructor(){
@@ -162,7 +160,7 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
                 }
             }
         }else{
-             message.warning('留一首看家吧！',1);
+             message.warning('留一首看家哈！',1);
         }
     }
     componentDidMount(){            //页面渲染后更新状态
@@ -214,19 +212,4 @@ class MusicBox extends React.Component {    //定义了一个音乐组件，其�
 }
 
 
-
-class App extends Component {    //将播放器放入APP，在由app放入index
-  render() {
-    return (
-      <div className="App">
-        <div className="App-header">
-          <img src={require('./images/play.png')} className="App-logo" alt="logo" />
-          <h2>Let's Play Music!</h2>
-        </div>
-        <MusicBox />       
-      </div>
-    );
-  }
-}
-
-export default App;
+export default MusicBox;

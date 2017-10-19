@@ -10,7 +10,7 @@ const musicObj = [
         "id": "1",
         "name": "The Call",
         "artists": "Backstreet",
-        "img": "http://img.eaymusic.com/forum/201506/14/132005m9qpda22eeuqzu6z.jpg",
+        "img": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1508415286855&di=9bcc7b20fbfca57156de8f9bfe9fd0e7&imgtype=0&src=http%3A%2F%2Fimg.xiami.net%2Fimages%2Fartistpic%2F18%2F10018%2F1246863027_0vUo.jpg",
         "audio": "http://ws.stream.qqmusic.qq.com/97706.m4a?fromtag=46"
     },
     {

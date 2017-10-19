@@ -1,5 +1,5 @@
-
 import React, { Component } from 'react';
+import tempimg from '../images/temp.png'
 
 class MusicInfo extends Component {  //歌曲信息组件
     render(){       
@@ -12,7 +12,7 @@ class MusicInfo extends Component {  //歌曲信息组件
                     {this.props.info != null ? this.props.info.artists : 'Sample'}
                 </p>
                 <div className="music-pic">
-                    <img src={this.props.info != null ? this.props.info.img : require("./images/temp.png")} alt="music-pic"/>
+                    <img src={this.props.info != null ? this.props.info.img : tempimg} alt="music-pic"/>
                 </div>
             </div>
         )
