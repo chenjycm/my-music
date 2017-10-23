@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Slider from 'antd/lib/slider';   //引入滑动条样式
-import Icon from 'antd/lib/icon';       //引入播放按钮样式
+import {Slider, Icon} from 'antd';   //引入antd模块
 
 class MusicControl extends Component {   //播放器控制器  
     render(){        

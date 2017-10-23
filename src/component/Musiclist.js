@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Icon from 'antd/lib/icon';       //引入播放按钮样式
-import Input from 'antd/lib/input';
-import message from 'antd/lib/message';
+import {Icon, Input, message} from 'antd';   
+
+
+const Search = Input.Search;
+
 class Musiclist extends Component {  //播放列表组件。
     constructor(props){
         super(props);
@@ -11,38 +13,34 @@ class Musiclist extends Component {  //播放列表组件。
             listshow: false,     //显示播放列表内容
             searchshow: false,    //显示搜索列表内容
             searchresult: ''       //存储搜索结果
-        }
-        this.listDisplay = this.listDisplay.bind(this);
-        this.hideList = this.hideList.bind(this);
-        this.searchDisplay=this.searchDisplay.bind(this);
-        this.searchMusic=this.searchMusic.bind(this);
-        this.addMusic=this.addMusic.bind(this);
-        this.closeList=this.closeList.bind(this);
-        this.doNotDo=this.doNotDo.bind(this);
-        this.delList=this.delList.bind(this);
+        }       
     }
-    listDisplay(){   //点击列表菜单，修改列表状态为显示或隐藏
+
+    componentDidMount(){
+        document.onclick = this.closeList;   //添加点击document 关闭list框
+    }
+    listDisplay = () => {   //点击列表菜单，修改列表状态为显示或隐藏
         this.setState({
             showList: !this.state.showList,
             listshow: true,
             searchshow: false
         });
     }
-    searchDisplay(){
+    searchDisplay = () => {
         this.setState({
             showList: !this.state.showList,
             listshow: false,
             searchshow: true
         });         
     }
-    hideList(e){
+    hideList = (e) => {
         const event = e.target.parentNode;
         this.setState({
             showList: false
         },this.props.getListId(event));     //在子组件中调用父组件的方法，修改父组件的状态
         
     }
-    searchMusic(name){
+    searchMusic = (name) => {
         let vm = this;
         if(name){
             axios.get('https://route.showapi.com/213-1?showapi_appid=42818&showapi_sign=fec952c9ebbb40399437efcff818f458&keyword='+name+'&page=1&')
@@ -59,7 +57,7 @@ class Musiclist extends Component {  //播放列表组件。
              message.warning('未输入搜索内容！',2,)
         }
     }
-    addMusic(e){
+    addMusic = (e) => {
         let m = e.target.parentNode;
         let n = {
             "id": m.getAttribute('data-id'),
@@ -71,25 +69,24 @@ class Musiclist extends Component {  //播放列表组件。
         this.props.updateList(n);
         e.target.remove();
     }
-    closeList(){
+    closeList = () => {
         this.setState({
             showList: false           
         });
     }
-    doNotDo(e){         //阻止冒泡，实现点击list框内不隐藏
+    doNotDo = (e) => {         //阻止冒泡，实现点击list框内不隐藏
         e.nativeEvent.stopImmediatePropagation();
     }
-    componentDidMount(){
-        document.onclick = this.closeList;   //添加点击document 关闭list框
-    }
-    delList(e){
+    delList = (e) => {
         let id = e.target.parentNode.getAttribute('data-id');
         this.props.deleteList(id);
     }
     render(){          
-        const musiclist = this.props.lists.map((item,index)=>{
+        const {searchresult, showList, searchshow, listshow} = this.state;
+        const {lists, currentListIndex} = this.props;
+        const musiclist = lists && lists.map((item,index)=>{
             return (<li 
-                    className={(this.props.currentListIndex != index ) ? '' : 'active'} 
+                    className={(currentListIndex != index ) ? '' : 'active'} 
                     data-id={item.id} 
                     key={item.id} 
                    >
@@ -98,10 +95,9 @@ class Musiclist extends Component {  //播放列表组件。
                     </li>
                 );
             }
-        );
-        const Search = Input.Search;
-        const slist = this.state.searchresult ?
-            this.state.searchresult.map((item)=>{
+        );       
+        const slist = searchresult ?
+            searchresult.map((item)=>{
                     return (
                         <li
                             key={item.songid}
@@ -127,16 +123,16 @@ class Musiclist extends Component {  //播放列表组件。
                 <Icon type="bars" className="music-listbtn" onClick={this.listDisplay}/>                
                 <Icon type="search" className="music-search" onClick={this.searchDisplay}/>
                
-                    <div id="lists" className={this.state.showList ? 'listshowing' : 'listhide'} >
+                    <div id="lists" className={showList ? 'listshowing' : 'listhide'} >
                         
-                        { this.state.searchshow ?  <Search 
+                        { searchshow ?  <Search 
                             className="serchinput"
                             placeholder="输入歌曲名或者歌手名"
                             onSearch={ value => this.searchMusic(value) }
                             /> : <Icon type="close-circle-o" className="closeList" onClick={this.closeList} />
                         }
                         <ul>{
-                            this.state.listshow ? musiclist : searchlist
+                            listshow ? musiclist : searchlist
                         }
                         </ul>                   
                     </div>
