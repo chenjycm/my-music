@@ -270,10 +270,23 @@
     font-size: 16px;
     cursor: pointer;
 }
+.prevPage{
+    position: absolute;
+    left: 28px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.nextPage{
+    position: absolute;
+    right: 28px;
+    font-size: 16px;
+    cursor: pointer;
+}
 .closeList{
     color: #9297a2;
     font-size: 16px;
     cursor: pointer;
+    margin: 0 20px;
     margin-bottom: 7px;
 }
 @keyframes App-logo-spin {

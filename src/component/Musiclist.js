@@ -12,7 +12,10 @@ class Musiclist extends Component {  //播放列表组件。
             showList: false,    //显示列表框
             listshow: false,     //显示播放列表内容
             searchshow: false,    //显示搜索列表内容
-            searchresult: ''       //存储搜索结果
+            searchresult: '',       //存储搜索结果
+            currentPage: 1,
+            totalPage: 1,
+            searchContent: ''
         }       
     }
 
@@ -40,16 +43,23 @@ class Musiclist extends Component {  //播放列表组件。
         },this.props.getListId(event));     //在子组件中调用父组件的方法，修改父组件的状态
         
     }
-    searchMusic = (name) => {
-        if(name){
-            axios.get('https://route.showapi.com/213-1?showapi_appid=42818&showapi_sign=fec952c9ebbb40399437efcff818f458&keyword='+name+'&page=1&')
+    handleSearchChange = (e) => {
+        this.setState({
+            searchContent : e.target.value
+        })
+    }
+    fetchData = (page = 1) => {
+        const {searchContent} = this.state;
+        if(searchContent){
+            axios.get('https://route.showapi.com/213-1?showapi_appid=42818&showapi_sign=fec952c9ebbb40399437efcff818f458&keyword='+searchContent+'&page='+page+'&')
             .then((res)=>{
                 let data = res.data.showapi_res_body.pagebean.contentlist;
                 let newData = data.filter((e)=>{
-                    return e.songid > 0
+                    return e.songid > 0 && !e.songname.match(/&#/g)
                 })
                 this.setState({
                     searchresult: newData,
+                    totalPage: res.data.showapi_res_body.pagebean.allPages
                 });
             })
             .catch((err)=>{
@@ -58,6 +68,13 @@ class Musiclist extends Component {  //播放列表组件。
         }else{
              message.warning('未输入搜索内容！',2,)
         }
+    }
+    searchMusic = () => {
+        const {searchContent} = this.state;
+        this.setState({
+            currentPage: 1
+        })
+        this.fetchData();
     }
     addMusic = (e) => {
         let m = e.target.parentNode;
@@ -79,12 +96,28 @@ class Musiclist extends Component {  //播放列表组件。
     doNotDo = (e) => {         //阻止冒泡，实现点击list框内不隐藏
         e.nativeEvent.stopImmediatePropagation();
     }
+    prevPage = () => {
+        const {currentPage} = this.state;
+        if(currentPage > 1){
+            this.setState({
+                currentPage: currentPage - 1
+            },()=>this.fetchData(currentPage-1))       
+        }
+    }
+    nextPage = () => {
+        const {currentPage, totalPage} = this.state;
+        if(currentPage < totalPage){
+            this.setState({
+                currentPage: currentPage + 1
+            },()=>this.fetchData(currentPage+1))
+        }
+    }
     delList = (e) => {
         let id = e.target.parentNode.getAttribute('data-id');
         this.props.deleteList(id);
     }
     render(){          
-        const {searchresult, showList, searchshow, listshow} = this.state;
+        const {searchresult, showList, searchshow, listshow, currentPage, totalPage} = this.state;
         const {lists, currentListIndex} = this.props;
         const musiclist = lists && lists.map((item,index)=>{
             return (<li 
@@ -104,7 +137,6 @@ class Musiclist extends Component {  //播放列表组件。
         }
         const slist = searchresult ?
             searchresult.map((item)=>{
-                debugger;
                     return (
                         <li key={item.songid}
                             data-id={item.songid}
@@ -137,12 +169,19 @@ class Musiclist extends Component {  //播放列表组件。
                     <div>
                         <div className={`lists ${showList ? searchshow && !listshow ? 'listshowing':'listhide' : 'listhide'}`}>
                             <div>
+                                {
+                                    currentPage > 1 ? <Icon type="left-circle" className="prevPage" onClick={this.prevPage}/> : ''
+                                }
                                 <Icon type="close-circle-o" className="closeList" onClick={this.closeList} />
+                                {
+                                    currentPage < totalPage ? <Icon type="right-circle" className="nextPage" onClick={this.nextPage}/> : ''
+                                }                                
                             </div>
                             <Search
                                 className="serchinput"
                                 placeholder="输入歌曲名或者歌手名"
-                                onSearch={ value => this.searchMusic(value) }
+                                onChange={this.handleSearchChange}
+                                onSearch={this.searchMusic }
                                 />
                             <ul className='searchUl'>{searchlist}</ul>
                         </div>
