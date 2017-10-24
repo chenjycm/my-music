@@ -17,7 +17,7 @@ class MusicBox extends Component {
             currentListIndex: 0, //初始化加载第一首歌曲
             currentTime: 0, //初始化当前播放时间为0
             currentTotalTime: 3600, //初始化当前歌曲总时间,取了一个大点的数据，以免加载过慢时显示总时间小于播放了的时间
-            playStatus: false, //播放状态，false表示已暂停，true表示正在播放
+            playStatus: true, //播放状态，false表示已暂停，true表示正在播放
             playVolume: 0.5, //音量 最小是0 最大是1
             lists: Music, //读取音乐列表到lists作为状态参数，正常应该设置为props参数，也可以在后面直接用Music（这里简化过程用了state，为了以后能够动态更新Music）
             randomPlay: false
@@ -91,27 +91,44 @@ class MusicBox extends Component {
             });
         }
     };
+    getRandom = (len, oldIndex) => {
+        let newIndex =  Math.floor(Math.random()*len);
+        if(newIndex != oldIndex){
+            return newIndex
+        }else{
+            this.getRandom(len, oldIndex);
+        }
+    }
     next = () => {
         //下一首
-        const { currentListIndex, lists } = this.state;
-        if (currentListIndex + 1 >= lists.length) {
-            clearInterval(this.timer);
-            message.warning("已是最后一首歌，将跳转到第一首！", 1, () => {
-                this.setState({
-                    currentListIndex: 0,
-                    currentTime: 0,                   
-                },() => {
-                    this.timeMove();
-                    this.updatePlayStatus();
-                });
-            });
-        } else {
+        const { currentListIndex, lists, randomPlay } = this.state;
+        if(randomPlay & lists.length > 0){
             this.setState({
-                currentListIndex: currentListIndex + 1,
+                currentListIndex: this.getRandom(lists.length, currentListIndex),
                 currentTime: 0
             },() => {
                 this.updatePlayStatus();
-            });
+            });           
+        }else{
+            if (currentListIndex + 1 >= lists.length) {
+                clearInterval(this.timer);
+                message.warning("已是最后一首歌，将跳转到第一首！", 1, () => {
+                    this.setState({
+                        currentListIndex: 0,
+                        currentTime: 0,                   
+                    },() => {
+                        this.timeMove();
+                        this.updatePlayStatus();
+                    });
+                });
+            } else {
+                this.setState({
+                    currentListIndex: currentListIndex + 1,
+                    currentTime: 0
+                },() => {
+                    this.updatePlayStatus();
+                });
+            }
         }
     };
 
@@ -200,7 +217,7 @@ class MusicBox extends Component {
         const {randomPlay} = this.state;
         this.setState({
             randomPlay: !randomPlay
-        },()=>{console.log(this.state.randomPlay)})
+        })
     }
     render() {
         const { lists, currentListIndex, currentTime, currentTotalTime, playStatus} = this.state;
@@ -233,7 +250,7 @@ class MusicBox extends Component {
                 <audio
                     id="audio"
                     ref="audio"
-                    src={lists[+currentListIndex].audio}
+                    src={lists[currentListIndex].audio}
                     type="audio/mp4"
                 >
                     您的浏览器已经古董啦，请使用最新版现代浏览器。
