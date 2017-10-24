@@ -54,8 +54,9 @@ class Musiclist extends Component {  //播放列表组件。
             axios.get('https://route.showapi.com/213-1?showapi_appid=42818&showapi_sign=fec952c9ebbb40399437efcff818f458&keyword='+searchContent+'&page='+page+'&')
             .then((res)=>{
                 let data = res.data.showapi_res_body.pagebean.contentlist;
+                let pattern = /&#/g;
                 let newData = data.filter((e)=>{
-                    return e.songid > 0 && !e.songname.match(/&#/g)
+                    return e.songid > 0 && !pattern.test(e.songname)
                 })
                 this.setState({
                     searchresult: newData,

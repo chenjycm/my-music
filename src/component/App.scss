@@ -289,6 +289,13 @@
     margin: 0 20px;
     margin-bottom: 7px;
 }
+.playType{
+    position: absolute !important;
+    right: 0;
+}
+.ant-switch-checked{
+    background-color: #619e90 !important;
+}
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

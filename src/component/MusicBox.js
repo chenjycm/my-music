@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-// import message from 'antd/lib/message';
 import { message } from "antd";
+//引入自定义组件
 import Musiclist from "./Musiclist";
 import MusicInfo from "./MusicInfo.js";
 import MusicTime from "./MusicTime.js";
 import MusicControl from "./MusicControl.js";
+//引入播放列表
 import Music from "../music/music"; //引入 音乐列表 ，将音乐列表独立出来，方便后台读取文件，不然要import很多文件
 
 class MusicBox extends Component {
@@ -15,25 +16,26 @@ class MusicBox extends Component {
         this.state = {            
             currentListIndex: 0, //初始化加载第一首歌曲
             currentTime: 0, //初始化当前播放时间为0
-            currentTotalTime: 3599, //初始化当前歌曲总时间
+            currentTotalTime: 3600, //初始化当前歌曲总时间,取了一个大点的数据，以免加载过慢时显示总时间小于播放了的时间
             playStatus: false, //播放状态，false表示已暂停，true表示正在播放
             playVolume: 0.5, //音量 最小是0 最大是1
-            lists: Music //读取音乐列表到lists作为状态参数，正常应该设置为props参数，也可以在后面直接用Music（这里简化过程用了state，为了以后能够动态更新Music）
+            lists: Music, //读取音乐列表到lists作为状态参数，正常应该设置为props参数，也可以在后面直接用Music（这里简化过程用了state，为了以后能够动态更新Music）
+            randomPlay: false
         };
     } 
     componentDidMount() {
-        //页面渲染后更新状态       
+        //页面渲染后更新状态
         const {playVolume} = this.state;
         let audio = this.refs.audio; //尽量少对dom操作
         this.updatePlayStatus();
         this.timeMove();
         audio.addEventListener("loadedmetadata", () => {
-            //添加侦听事件,当指定的音频/视频的元数据已加载时触发
+            //添加侦听事件,当指定的音频/视频的元数据已加载时触发            
             this.setState({
-                    currentTotalTime: audio.duration
-                },() => {
-                    audio.volume = playVolume
-                });
+                currentTotalTime: audio.duration
+            },() => {                   
+                audio.volume = playVolume
+            });
         });
     }
     updatePlayStatus = () => {
@@ -48,11 +50,10 @@ class MusicBox extends Component {
     };
     timeMove = () => {
         //更新时间，显示时间走动
-        const {currentTime, currentTotalTime} = this.state;
         let audio = this.refs.audio;
         this.timer = setInterval(() => {
-            if (currentTime >= currentTotalTime) {
-                //判断时间确定是否播放下一首歌
+            if (this.state.currentTime >= this.state.currentTotalTime) {
+                //判断时间确定是否播放下一首歌               
                 this.next();
             } else {
                 this.setState({
@@ -94,12 +95,13 @@ class MusicBox extends Component {
         //下一首
         const { currentListIndex, lists } = this.state;
         if (currentListIndex + 1 >= lists.length) {
+            clearInterval(this.timer);
             message.warning("已是最后一首歌，将跳转到第一首！", 1, () => {
                 this.setState({
                     currentListIndex: 0,
-                    currentTime: 0
-                    // playStatus: false
+                    currentTime: 0,                   
                 },() => {
+                    this.timeMove();
                     this.updatePlayStatus();
                 });
             });
@@ -194,7 +196,12 @@ class MusicBox extends Component {
             message.warning("留一首看家哈！", 1);
         }
     };
-
+    playTypeChange = () => {
+        const {randomPlay} = this.state;
+        this.setState({
+            randomPlay: !randomPlay
+        },()=>{console.log(this.state.randomPlay)})
+    }
     render() {
         const { lists, currentListIndex, currentTime, currentTotalTime, playStatus} = this.state;
         return (
@@ -221,6 +228,7 @@ class MusicBox extends Component {
                     onPrev={this.previous}
                     onNext={this.next}
                     volumeChange={this.volumeChange}
+                    playTypeChange={this.playTypeChange}
                 />
                 <audio
                     id="audio"
