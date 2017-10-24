@@ -16,24 +16,24 @@ class Musiclist extends Component {  //播放列表组件。
         }       
     }
 
-    componentDidMount(){
+    componentDidMount = ()=>{
         document.onclick = this.closeList;   //添加点击document 关闭list框
     }
     listDisplay = () => {   //点击列表菜单，修改列表状态为显示或隐藏
         this.setState({
-            showList: !this.state.showList,
+            showList: true,
             listshow: true,
             searchshow: false
         });
     }
     searchDisplay = () => {
         this.setState({
-            showList: !this.state.showList,
+            showList: true,
             listshow: false,
             searchshow: true
         });         
     }
-    hideList = (e) => {
+    hideList = (e) => {  //点击播放列表中的某首歌，这时播放这首歌并隐藏列表
         const event = e.target.parentNode;
         this.setState({
             showList: false
@@ -41,16 +41,18 @@ class Musiclist extends Component {  //播放列表组件。
         
     }
     searchMusic = (name) => {
-        let vm = this;
         if(name){
             axios.get('https://route.showapi.com/213-1?showapi_appid=42818&showapi_sign=fec952c9ebbb40399437efcff818f458&keyword='+name+'&page=1&')
-            .then(function(res){
+            .then((res)=>{
                 let data = res.data.showapi_res_body.pagebean.contentlist;
-                vm.setState({
-                    searchresult: data,
+                let newData = data.filter((e)=>{
+                    return e.songid > 0
+                })
+                this.setState({
+                    searchresult: newData,
                 });
             })
-            .catch(function(err){
+            .catch((err)=>{
                 console.log(err);
             })
         }else{
@@ -67,9 +69,9 @@ class Musiclist extends Component {  //播放列表组件。
             "audio": m.getAttribute('data-audio'),
         }
         this.props.updateList(n);
-        e.target.remove();
+        // e.target.remove();
     }
-    closeList = () => {
+    closeList = () => {   //隐藏list框
         this.setState({
             showList: false           
         });
@@ -95,19 +97,28 @@ class Musiclist extends Component {  //播放列表组件。
                     </li>
                 );
             }
-        );       
+        );
+        let listId = [];
+        for(let key in lists){
+            listId.push(+lists[key].id);            
+        }
         const slist = searchresult ?
             searchresult.map((item)=>{
+                debugger;
                     return (
-                        <li
-                            key={item.songid}
+                        <li key={item.songid}
                             data-id={item.songid}
                             data-name={item.songname}
                             data-artists={item.singername}
                             data-img={item.albumpic_big}
                             data-audio={item.m4a}                                        
                             >
-                            <span>{item.songname}-{item.singername}</span><Icon type="plus-circle-o" className="listsbtn" onClick={this.addMusic} />
+                            <span>{item.songname}-{item.singername}</span>
+                            {
+                                listId.indexOf(item.songid) < 0 ?
+                                <Icon type="plus-circle-o" className="listsbtn" onClick={this.addMusic} /> 
+                                : ''
+                            }
                         </li>
                     )
                 })
@@ -118,25 +129,29 @@ class Musiclist extends Component {  //播放列表组件。
                 {slist}
             </div>
         ); 
+        // searchshow && !listshow ?
         return (                      
             <div className="musiclist" onClick={this.doNotDo}>     
-                <Icon type="bars" className="music-listbtn" onClick={this.listDisplay}/>                
-                <Icon type="search" className="music-search" onClick={this.searchDisplay}/>
-               
-                    <div id="lists" className={showList ? 'listshowing' : 'listhide'} >
-                        
-                        { searchshow ?  <Search 
-                            className="serchinput"
-                            placeholder="输入歌曲名或者歌手名"
-                            onSearch={ value => this.searchMusic(value) }
-                            /> : <Icon type="close-circle-o" className="closeList" onClick={this.closeList} />
-                        }
-                        <ul>{
-                            listshow ? musiclist : searchlist
-                        }
-                        </ul>                   
-                    </div>
-                
+                <Icon type="bars" className="music-listbtn" onClick={this.listDisplay}/>
+                <Icon type="search" className="music-search" onClick={this.searchDisplay}/>                       
+                    <div>
+                        <div className={`lists ${showList ? searchshow && !listshow ? 'listshowing':'listhide' : 'listhide'}`}>
+                            <div>
+                                <Icon type="close-circle-o" className="closeList" onClick={this.closeList} />
+                            </div>
+                            <Search
+                                className="serchinput"
+                                placeholder="输入歌曲名或者歌手名"
+                                onSearch={ value => this.searchMusic(value) }
+                                />
+                            <ul className='searchUl'>{searchlist}</ul>
+                        </div>
+                        <div className={`lists ${showList ? !searchshow && listshow ? 'listshowing':'listhide' : 'listhide'}`}>
+                                <Icon type="close-circle-o" className="closeList" onClick={this.closeList} />
+                            <ul className='musicUl'>{musiclist}</ul>
+                        </div>
+                    </div>                   
+                 
             </div>
         )
     }

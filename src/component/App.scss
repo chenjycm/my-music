@@ -199,12 +199,21 @@
     height: 63%;
     background: #fff;
     border-radius: 4px;
-    transition: all 0.5s;
+    overflow: hidden;
+    transition: all 0.4s;
 }
 .listshowing ul{
+   
+}
+.searchUl{
     overflow-y: scroll;
-    max-height: 290px;
-    transition: all 0.5s ;
+    max-height: 256px;
+    transition: all 0.4s ;
+}
+.musicUl{
+    overflow-y: scroll;
+    max-height: 294px;
+    transition: all 0.4s ;
 }
 .listshowing li{
     position: relative;
@@ -230,23 +239,17 @@
     width: 86%;
     margin-left: 7%;
     margin-right: 7%; 
-    transition: all 0.5s;
-}
-.listhide ul{
-    visibility: hidden;
-    opacity: 0;
-    height: 0;
+    transition: all 0.5s;   
 }
 .listhide li{
-    visibility: hidden;
-    opacity: 0;
-    height: 0;
+    display: none;
+    transition: all 0.5s;     
 }
 
-#lists li:hover{
+.lists li:hover{
     background-color: #e2e2e0;
 }
-#lists .active{
+.lists .active{
     background-color: #b7e5ff;
 }
 .ant-message{
@@ -302,8 +305,10 @@
     .music-pic{
         height: 250px;
     }
-    .listshowing ul{
-        overflow-y: scroll;
-        max-height: 256px;
+    .searchUl{
+        max-height: 224px;
+    }
+    .musicUl{
+        max-height: 262px;
     }
 }
