@@ -11,10 +11,10 @@ class App extends Component {    //将播放器放入APP，在由app放入index
     render() {
     return (
       <div className="App">
-        <div className="App-header">
+        {/* <div className="App-header">
           <img src={playimg} className="App-logo" alt="logo" />
           <h2>Let's Play Music!</h2>
-        </div>
+        </div> */}
         <MusicBox />       
       </div>
     );

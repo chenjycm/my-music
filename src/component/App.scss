@@ -156,6 +156,9 @@
    vertical-align: middle !important;
    margin: 10px 50px;
    cursor: pointer;
+   &:hover{
+        color:#d2d2d2;
+   }
 }
 .contrvo{
     height: 82%;
