@@ -24,7 +24,7 @@ class MusicBox extends Component {
         };
     } 
     componentDidMount() {
-        //页面渲染后更新状态
+        //页面渲染后更新状态        
         const {playVolume} = this.state;
         let audio = this.refs.audio; //尽量少对dom操作
         this.updatePlayStatus();
@@ -72,23 +72,32 @@ class MusicBox extends Component {
     };
     previous = () => {
         //上一首
-        const { currentListIndex, lists } = this.state;
-        if (currentListIndex === 0) {
-            message.warning("已是第一首歌，将跳转到最后一首！", 1, () => {
+        const { currentListIndex, lists ,randomPlay} = this.state;
+        if(randomPlay){
+            this.setState({
+                currentListIndex: this.getRandom(lists.length, currentListIndex),
+                currentTime: 0
+            },() => {
+                this.updatePlayStatus();
+            });           
+        }else{
+            if (currentListIndex === 0) {
+                message.warning("已是第一首歌，将跳转到最后一首！", 1, () => {
+                    this.setState({
+                        currentListIndex: lists.length - 1,
+                        currentTime: 0
+                    },() => {
+                        this.updatePlayStatus();
+                    });
+                });
+            } else {
                 this.setState({
-                    currentListIndex: lists.length - 1,
+                    currentListIndex: currentListIndex - 1,
                     currentTime: 0
                 },() => {
                     this.updatePlayStatus();
                 });
-            });
-        } else {
-            this.setState({
-                currentListIndex: currentListIndex - 1,
-                currentTime: 0
-            },() => {
-                this.updatePlayStatus();
-            });
+            }
         }
     };
     getRandom = (len, oldIndex) => {
@@ -96,13 +105,13 @@ class MusicBox extends Component {
         if(newIndex != oldIndex){
             return newIndex
         }else{
-            this.getRandom(len, oldIndex);
+            return this.getRandom(len, oldIndex);
         }
     }
     next = () => {
         //下一首
         const { currentListIndex, lists, randomPlay } = this.state;
-        if(randomPlay & lists.length > 0){
+        if(randomPlay){
             this.setState({
                 currentListIndex: this.getRandom(lists.length, currentListIndex),
                 currentTime: 0
@@ -221,6 +230,8 @@ class MusicBox extends Component {
     }
     render() {
         const { lists, currentListIndex, currentTime, currentTotalTime, playStatus} = this.state;
+        // let a = this.getRandom(3, 2);
+        // console.log(a);
         return (
             <div className="music-box" id="music-box" ref="musicbox">
                 <Musiclist
@@ -250,7 +261,7 @@ class MusicBox extends Component {
                 <audio
                     id="audio"
                     ref="audio"
-                    src={lists[currentListIndex].audio}
+                    src={lists[+currentListIndex].audio}
                     type="audio/mp4"
                 >
                     您的浏览器已经古董啦，请使用最新版现代浏览器。
