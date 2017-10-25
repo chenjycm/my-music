@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import MusicBox from './MusicBox';
 import './App.scss';             //页面css
-import playimg from '../images/play.png';
+// import playimg from '../images/play.png';
 
 class App extends Component {    //将播放器放入APP，在由app放入index
     
