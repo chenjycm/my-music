@@ -21,6 +21,7 @@ class MusicTime extends Component {     //播放时间及进度
                <span>{this.converTime(currentTime)}</span>             
                     <div className="prodrag">
                         <Slider max={2000} value={progress * 2000} onChange={timeChange} onAfterChange={proChange} tipFormatter={false}/>
+                    </div>
                <span>{this.converTime(currentTotalTime) }</span>                
             </div>
         )
