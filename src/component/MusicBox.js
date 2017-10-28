@@ -145,10 +145,11 @@ class MusicBox extends Component {
         // 修改音量
         const { playVolume } = this.state;
         let audio = this.refs.audio;
+        let newVolume = value/30;
         this.setState({
-            playVolume: value / 30
+            playVolume: newVolume
         },() => {
-            audio.volume = playVolume;
+            audio.volume = newVolume;
         });
     };
     proChange = value => {
